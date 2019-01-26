@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1514140574 source:c:\users\shinelon\documents\c\newc\ตฺพลีย\usehotel\main.cpp
+	<iostream>
+
+1546963086 source:c:\users\shinelon\documents\c\newc\ตฺพลีย\usehotel\usehotel.c
+	<stdio.h>
+	"hotel.h"
+
+1546963082 c:\users\shinelon\documents\c\newc\ตฺพลีย\usehotel\hotel.h
+
+1546963082 source:c:\users\shinelon\documents\c\newc\ตฺพลีย\usehotel\hotel.c
+	<stdio.h>
+	"hotel.h"
+
