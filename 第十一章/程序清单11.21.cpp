@@ -23,16 +23,15 @@ int main(void) {
 }
 
 char * s_gets(char * st, int n) {
-    char * ret_val;
-    int i =0;
+    char * ret_val, st_end;
     ret_val = fgets(st, n, stdin);
     if (ret_val) {
 
-        while(st[i] != '\n' && st[i] != '\0') {
-            i++;
-        }
-        if (st[i] == '\n') {
-            st[i] = '\0';
+        // 查找换行符，如果换行符存在，则返回其地址
+        st_end = strchr(st, '\n');
+//      如果地址存在，直接赋值此地址上的值为空字符
+        if (st_end) {
+            *st_end = '\0';
         } else {
             while(getchar() != '\n') {
                 continue;
