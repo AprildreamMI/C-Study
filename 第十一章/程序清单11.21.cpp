@@ -23,7 +23,8 @@ int main(void) {
 }
 
 char * s_gets(char * st, int n) {
-    char * ret_val, st_end;
+    char * ret_val;
+    char * st_end;
     ret_val = fgets(st, n, stdin);
     if (ret_val) {
 
