@@ -859,11 +859,591 @@ A => B >>>>>>> -1
 
 > 该函数可以把多个元素组合成一个字符串，sprintf（）的第一个参数是目标字符串的地址，其余参数和printf()相同，即格式字符串和带写入项的列表
 
+## 第十二章存储类别、连接和内存管理
+
+### 对象
+
+从硬件方面来看，被存储的每个值都占用一定的物理内存，C语言把这样的一块内存成为对象
+
+### 自动变量的初始化
+
+自动变量不会初始化，除非显示的初始化它
+
+```C
+int main(void) {
+   	int repid;		 // 值为之前占用分配给repid的空间的任意值（如果有的话，别指望此值为0）
+   	int tents = 5;   // 初始变量为5
+}
+```
+
+### 作用域
+
+#### 块作用域
+
+块使用一堆花括号括起来的代码区域，定义在块中的变量具有块级作用域
+
+#### 函数作用域
+
+仅用于goto语句的标签，这意味着即使一个标签首次出现在函数的内层块中，它的作用域也延伸整个函数，
+
+#### 函数原型作用域
+
+用于函数原型中的形参名
+
+```
+int mighty(int mouse, double large)
+```
+
+#### 文件作用域
+
+> 整个翻译单元可见
+
+变量的定义在函数的外面，具有文件作用域，具有文件作用域的变量，从他的定义出到该定义所在的文件的末尾均可见
+
+```
+#include <stdio,h>
+int units = 0;  // 块级作用域
+int main(void) {
+    
+    printf("%d\n", units)
+}
+```
+
+### 翻译单元和文件
+
+多个文件在编译器可能以一个文件出现，列如，通常在源代码.c中包含一个或多个头文件(.h)头文件回一次包含其他文件，所以会包含多个为物理文件，但是C预处理器实际上是用包含的头文件内容替换#include指令，所以，编译器源代码文件和所有的头文件都成是一个包含信息的单独文件，这个文件即为翻译单元
+
+**描述一个具有文件作用域的变量时，它的实际可见范围是整个翻译单元**
+
+**如果程序由多个源代码组成，那么该程序也将由多个翻译单元组成，每个翻译单元均对应一个源代码文件和它所包含的文件**
+
+### 链接
+
+#### 外部链接
+
++ 文件作用域  多翻译单元使用
+
+  ```c
+  int giants = 5;  		  // 文件作用域 外部链接
+  static int dodergs = 3 ;  // 文件作用域 外部链接
+  int main(void) {
+      
+      
+  }
+  ```
+
+#### 内部链接
+
++ 文件作用域  单翻译单元使用
+
+  ```C
+  int giants = 5;  		  // 文件作用域 外部链接
+  static int dodergs = 3 ;  // 文件作用域 外部链接
+  int main(void) {
+      
+      
+  }
+  ```
+
+#### 无连接
+
++ 块作用域
++ 函数作用域
++ 函数原型作用域
+
+### 存储期
+
+> 作用域和链接描述了标识符的可见性
+>
+> 存储器描述了通过这些标识符访问的对象的生存期
+
+#### 静态存储期
+
+> 如果对象具有静态存储期，那么他在程序的执行期间一直存在
+>
+> 无论内部链接还是外部链接的文件作用域，所有的文件作用域变量都是静态存储期
+
+##### 文件作用域具有静态存储期
+
+对于文件作用域，关键字static表明了去链接属性，而非存储期，以static声明的文件作用域变量具有内部链接
+
+#### 线程存储期
+
+> 线程存储期用于并发程序设计，程序执行可被分为多个线程，具有线程存储期的对象，从被声明时到线程结束时一直存在
+
+#### 自动存储期
+
+> 到此位置，我们使用的局部变量都是自动类别
+>
+> 然而，块作用域也能创建静态存储期的变量，需要把要把变量放在块中，且在声明前面加上关键字static
+
+块作用域的变量通常具有自动存储期，当程序进入定义这些变量的块时，为这些变量分配内存，当退出这个块时，释放刚才为变量分配的内存。
+
+#### 动态分配存储期
+
+### 寄存器变量
+
+> 不能对该变量使用地址运算符。
+
+寄存器变量和自动变量都一样，也就是说，他们都是块作用域，无连接和自动存储期，使用存储类别register便可声明寄存器变量
+
+```C
+int main(void) {
+    register int quick;
+}
+// 幸运是指声明变量register类别与直接命令相比，更像是一种请求，编译器必须根据寄存器或最快可用内存数量衡量请求，或者直接忽视请求，在这种情况下寄存器变量就变成了普通的自动变量，即使是这样，任然不能对该变量使用地址运算符。
+```
+
+### 块作用域的静态变量
+
+> 静态变量像是一个不可变的变量，实际上不是值不变，而是其再内存中原地不动
+
++ 如果未显示的初始化静态变量他们被初始化为0
++ 不能再函数的形参中使用static
+
+### 外部链接的静态变量（外部存储类别）
+
+> 外部链接的静态变量具有文件作用域、外部链接和静态存储期、属于该类别的变量被称为外部变量，
+>
+> 把变量的定义放在所有的函数的外面便创建的外部变量
+>
+> 为了指出在函数中使用了外部变量，可以在函数中使用关键字extern再次声明，
+>
+> 如果一个源代码文件使用的外部变量定义在另一个源代码文件中，则必须使用extern在该文件中声明该变量
+
+```C
+int Errupt；   		// 外部定义的变量
+double Up[100]; 	// 外部定义的数组
+extren char Coal;	// 如果Coal被定义在另外一个文件
+
+void next(void);
+int main(void) {
+    extern int Errupt;   // 可选的声明 
+    if (true) {
+        extern int Errupt = 22; // 错误的引用声明
+    }
+    extern double Up[];  // 可选的声明 并且不用指定数组的大小，
+}
+```
+
+### 内部链接的静态变量
+
+> 该类存储类别的变量具有静态存储期，文件作用域和内部链接，在所有函数外部
+
+```C
+int traveler = 1;			// 外部链接
+static int stayhome = 1;	// 内部链接
+int main(void) {
+    
+   extren int traveler;  // 使用定义在别处traveler
+   extren int stayhome;  // 使用定义在别处的stayhome
+}
+```
+
+### 分配内存： malloc()和free()
+
+```C
+double * ptd;
+int n = 30;
+ptd = (double *)malloc(n * sizeof(double))
+// 在C中不一定要使用强制类型转换，但在C++中需要
+```
+
+## 第十三章文件输入\输出
+
+### 文件是什么
+
+> 文件通常是在磁盘或固态硬盘上的一段已命名的存储区，
+
+**所有文件的内容都要以二进制的形式储存**，
+
+但是如果文件最初使用二进制编码的字符（ASCII）来表示文本，该文件就是文本文件，其中包含文本内容，
+
+如果文件中的二进制值代表机器语言代码或数值数据或图片或音乐，该文件就是二进制文件，其中包含二进制内容
+
+### getc()和putc()
+
+#### getc() 从文件中读取字符
+
+```C
+// 设置输入流 从哪里读取
+in = fopen(fileName, "r");
+// 从文件中读取字符
+ch = getc(in)
+
+// 把字符输入到文件中
+putc(ch, out);
+```
+
+
+
+### fprintf()和fscanf()，fgets()和fputs()
+
+#### fprintf()
+
+#### 普通输出到屏幕
+
+```C
+fprintf(stdout, "这是一段普通输出的文本\n");
+```
+
+#### 从xx写入到文件中
+
+```C
+FILE *fp;
+char words[40] = “zhaosi shi ge da ben dan”;
+
+if (fp = fopen("wordy", "a+") != NULL) {
+	// 从字符串数组中写入到wordy文件中	
+    fprintf(fp, "%s\n", words);
+}
+```
+
+#### fscanf()
+
+##### 普通从键盘中读入到XXX变量中
+
+```C
+fscanf(stdin, "%s", words);
+```
+
+##### 从文件中读入到xxx变量中
+
+```C
+rewind(fp)   // 返回到文件开始处
+// 从文件中读取数据于数组中 一行一行的读取
+fscanf(fp, "%s", words);
+```
+
+#### fgets()
+
+##### 参数
+
+> fgets()函数读取输入指导第一个换行符的后面，或读到文件结尾，或者读取STLEN-1字符，然后fgets()在末尾添加一个空字符使之成为一个字符串，如果fgets()在读到字符上限之气那已读完一整行，他会把表示行结尾的换行符放在空字符前面，fgets()在遇到EOF时，返回NULL值
+
++ 表示存储输入位置的地址(char * )
++ 整数 表示待输入字符串大小
++ 文件指针
+
+```C
+fgets(buf, STLEN, fp);
+// buf是char类型数组名称，STLEN是字符串的大小，fp是指向FILE的指针
+```
+
+#### fputs()
+
+##### 输出错误   
+
+fputs("打开文件失败", stderr);
+
+> 根据传入地址找到的字符串写入指定的文件中，在其打印字符串时，不会加入换行符
+
+##### 参数
+
++ 字符串的地址
++ 文件指针
+
+### 随机访问 fseek()和ftell()
+
+
+
+### size_t fwrite()函数和fread()函数
+
+> 定位到primer 结构变量开始的位置，并把结构中所有的字节都拷贝到与pbooks相关的文件中，
+>
+> fwrite(&primer, sizeof(struct book), 1, pbooks)
+>
+> 带相同参数的fread()表明从文件中拷贝一块结构大小的数据到&primer指向的位置
+
+#### 参数
+
++ 源文件变量 列如一个结构体开始的位置
++ 所需拷贝的一块数据的大小
++ 表明一次拷贝一块数据
++ 文件指针
 
 
 
 
 
+## 第十四章结构和其他数据形式
+
+### 声明结构体
+
+#### 普通声明
+
+```C
+struct book {
+    char title[40];
+    char author[40];
+    float value;
+}
+
+// 初始化
+struct book library = {
+ 	“C Promer Plus”,
+    "Prata",
+    88.8
+};
+// 或者
+struct book library = {
+ 	.title = “C Promer Plus”,
+    .author = "Prata",
+    .value = 88.8
+};
+```
+
+#### 带标记的简化声明
+
+```C
+struct book {
+     char title[40];
+    char author[40];
+    float value;
+} library;
+```
+
+#### 不带标记的简化声明
+
+> 然而，如果想多次使用结构模板，就要使用代标记的形式
+
+```C
+struct {
+     char title[40];
+    char author[40];
+    float value;
+} library;
+```
+
+### 嵌套结构
+
+```C
+// 第一个结构
+struct names {
+    char first[40];
+    char last[40]；
+};
+
+struct guy {
+    struct names handle;
+    char favfood[40];
+    char job[40];
+    float income;
+}
+
+// 初始化
+struct guy fellow = {
+    {"zhao", "si"},
+    "hahahah",
+    "youpinkejigongsi",
+    68112.0
+}
+
+```
+
+### 指向结构的指针
+
+```C
+// 接上代码的结构定义
+struct guy fellow[2] = {
+    {
+        {"zhao", "si"},
+        "hahahah",
+        "youpinkejigongsi",
+        68112.0
+    },
+   	{
+        {"zhao", "si"},
+        "hahahah",
+        "youpinkejigongsi",
+        68112.0
+   	}
+}
+
+// 指向结构的指针
+struct guy * guy_p = &fellow[0];  
+
+// 通过指针访问结构体元素
+printf("%s\n", guy_p->income);
+printf("%s\n", guy_p->names.fister);
+```
+
+#### 结构名不是一个地址，所以需要先取地址
+
+```C
+struct guy barney;
+struct guy * p_guy;
+p_guy = &barney;
+```
+
+#### 用指针访问成员
+
++ 需要使用->
++ 不能使用.，因为p_guy不是结构名
+
+### 向函数传递结构的信息
+
+#### 传递结构成员
+
+```C
+double sum(double x, double y) {
+    return (x + y);
+}
+int main(void) {
+    struct funds {
+        double bankfund;
+        double savefund;
+    } stan;
+    struct stan = {
+        55,
+        22
+    }
+    
+    // 直接传递数值即可，sum函数并不关心传入的时什么样的结构，他只关心传入的数据类型为double类型
+    printf("%lf\n", sum(stan.bankfund, stan.savefund))
+    return 0;
+}
+```
+
+#### 传递结构的地址
+
+```C
+void showinfo (struct names * pt) {
+    ,.......
+}
+int main(void) {
+    struct names person;
+    showinfo(&person);
+    
+    return 0;
+}
+```
+
+#### 直接传递结构
+
+
+
+#### 其他的结构特性
+
++ C允许把一个结构直接赋值给另一个结构，但是数组不能这样做
+
+  ```C
+  // 列如有相同结构的结构变量  o_data1, o_data2
+  // 可以直接赋值 把o_data2中每个成员的值都赋值给了o_data1，即使成员是数组，也可以完成赋值
+  o_data1 = o_data2;
+  ```
+
++ 可以把结构初始化另外一个同类型的结构
+
+  ```C
+  struct names right_filed = {"zhao"，“si”};
+  struct names left_filed = right_filed;
+  ```
+
+### 结构中的字符数组和字符指针
+
+> 可以使用指向char的指针来代替字符数组
+
+```C
+// 使用正常的字符数组
+struct names {
+    char first[40];
+    char last[40];
+}
+// 使用指向char的指针
+struct pnames {
+    char * fister;
+    char * last;
+}
+// 具有潜在的危险
+scanf("%s", pnamse.first);
+// 指针pnamse.first的地址是未初始化的，其地址可能是任意值
+```
+
+### 结构、指针和malloc()
+
+```C
+// 使用指向char的指针
+struct pnames {
+    char * fister;
+    char * last;
+}
+int main(void) {
+    struct pnamse * zhaosi;
+    char temp[40];
+    scanf("%s", temp);
+    // 分配内存地址于指针变量
+    zhaosi->fister = (char *)malloc(strlen(temp) - 1);
+    strcpy(zhaosi->first, temp)
+}
+```
+
+### 复合字面量和结构
+
+#### 字面量赋值给结构体变量
+
+```c
+// 模板标记names
+struct names {
+    char first[40];
+    char last[40];
+}
+
+int main(void) {
+    
+   	struct names zhaosi;
+    // 创建符合字面量赋值给结构体变量
+    zhaosi = (struct names) {
+        "zhao",
+        "si"
+    };
+    return 0；
+}
+```
+
+#### 字面量作为函数的参数
+
+```C
+// 接受结构体为参数的函数
+double rect_area (struct rect t) {
+    return rect.x + rect.y
+}
+
+double area = rect_area((struct rect) {10.5, 20.5});
+```
+
+### 伸缩型数组成员
+
++ 伸缩型数组必须是结构的最后一个成员
++ 结构中必须有一个成员
++ 伸缩数组的声明类似于普通数组，只是它的方括号是空的
+
+```C
+struct flex {
+    int count;
+    double average;
+    double scores[];   //伸缩型数组成员
+}
+```
+
+#### 使用
+
+```C
+// 声明此结构类型指针
+struct flex * pf1;
+int n = 5;
+// 为结构和数组分配空间
+// 一个结构体的空间和长度为n的数组的空间，类型为double
+pf1 = malloc(sizeof(struct flex) + n * sizeof(double));
+// 可以进行赋值和使用
+。。。。。。。。。。。
+// n 进行了改编
+// 重新开辟空间
+pf2 = malloc(sizeof(struct flex) + n * sizeof(double))
+
+```
+
+### 联合
 
 
 
