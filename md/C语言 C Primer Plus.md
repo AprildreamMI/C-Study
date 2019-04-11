@@ -1,4 +1,4 @@
-# C语言 C 
+# CC语言 C 
 
 ## 第一章
 
@@ -1445,5 +1445,89 @@ pf2 = malloc(sizeof(struct flex) + n * sizeof(double))
 
 ### 联合
 
+​	联合是一种数据类型，他能在同一内存空间中存储不同的数据类型。**不是同时存储**
 
+#### 基本使用方法
+
+​	设计一种表，以存储既无规律，事先也不知道顺序的混合类型，使用联合类型的数组，其中的联合都大小相等，每个联合可以存储各种数据类型
+
+##### 创建联合
+
+​	需要一个联合模板和联合变量
+
+```C
+union hold {
+    int digit;
+    double bigfl;
+    char letter;
+};
+// 以上声明的结构可以存储一个int类型，一个double类型和char类型的值，然后，声明的联合只能存储一个int类型的值，或者一个double类型的值,或者一个char类型的值，他们不同同时存储。
+// 下面顶以了3个hold类型相关的变脸
+union hold fit;
+union hold save(10);
+union hold * pu;
+```
+
+##### 使用联合
+
+> 在联合中，一次只能存储一个值，即使有足够的空间，也不能同时存储一个char类型值和一个int类型值
+
+```
+fit.digit = 23;   // 把23存储在fit中，占2字节
+fit.bigfl = 2.0;  // 清楚23，存储2.0，占8字节
+fit.letter = 'h'; // 清楚2.0，存储h，占1字节
+
+// 利用指针访问
+pu = *fit;
+x = pu->digit;
+
+// 不能使用错误的类型
+fit.letter = 'A';
+finum = 3.02 * fit.bigfl;
+```
+
+#### 枚举类型
+
+> enum常量都是int类型 只要能使用int类型的地方就可以使用枚举类型                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+
+##### 声明
+
+```
+// 创建了spetrum作为标记名，允许把enum spetrum作为一个类型使用
+// spectru,的枚举范围时0~5
+enum spectrum {red, orange, yellow, green, blue, vaolet};
+enum spectrum color;
+```
+
+##### 使用
+
+```
+int c;
+color = blue;
+if (color == yellow) {
+    
+}
+for (color = red; color <= violet; color++) {
+    ....
+}
+```
+
+##### enum常量
+
+> blue 和 red时int类型的常量
+
+```
+printf("red = %d, orange = %d", red, orange);
+red = 0, orange = 1;
+```
+
+##### 默认值
+
+​	默认被分别赋值为0、1、2、3、4、5
+
+##### 赋值
+
+```C
+enum feline {low = 100, medium = 500, high = 2000};
+```
 
